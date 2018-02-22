@@ -222,23 +222,11 @@ namespace GeometryGym.Ifc
 		{
 			if (fs == null)
 				return;
-			switch (fs.mFormat)
-			{
-				case FormatIfc.XML:
-					ReadXMLStream(fs.mTextReader);
-					break;
-				case FormatIfc.JSON:
-#if (NOIFCJSON)
-					logError("IfcJSON not enabled!");
-					return;
-#else
-					ReadJSONFile(fs.mTextReader);
-					break;
-#endif
-				default:
-					ReadFile(fs.mTextReader, 0);
-					break;
-			}
+
+		
+		ReadFile(fs.mTextReader, 0);
+
+			
 			
 		}
 
@@ -525,30 +513,10 @@ namespace GeometryGym.Ifc
 			FileName = Path.Combine(FolderPath, fn  + Path.GetExtension(filename));
 			if(filename.EndsWith("xml"))
 			{
-				WriteXMLFile(FileName);
-				return true;
-			}
-#if (!NOIFCJSON)
-			else if(FileName.EndsWith("json"))
-			{
-				ToJSON(FileName);
+
 				return true;
 			}
 
-#endif
-#if (!NOIFCZIP)
-			bool zip = FileName.EndsWith(".ifczip");
-			System.IO.Compression.ZipArchive za = null;
-			if (zip)
-			{
-				if (System.IO.File.Exists(FileName))
-					System.IO.File.Delete(FileName);
-				za = System.IO.Compression.ZipFile.Open(FileName, System.IO.Compression.ZipArchiveMode.Create);
-				System.IO.Compression.ZipArchiveEntry zae = za.CreateEntry(System.IO.Path.GetFileNameWithoutExtension(FileName) + ".ifc");
-				sw = new StreamWriter(zae.Open());
-			}
-			else
-#endif
 			sw = new StreamWriter(FileName);
 			CultureInfo current = Thread.CurrentThread.CurrentCulture;
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
@@ -569,10 +537,7 @@ namespace GeometryGym.Ifc
 			sw.Write(getFooterString());
 			sw.Close();
 			Thread.CurrentThread.CurrentUICulture = current;
-#if (!NOIFCZIP)
-			if (zip)
-				za.Dispose();
-#endif
+
 			return true;
 		}
 	}

@@ -549,13 +549,6 @@ namespace GeometryGym.Ifc
 		{
 			get
 			{
-				try
-				{
-					string name = ((string)Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion", "RegisteredOrganization", "")).Replace("'", "");
-					if (!string.IsNullOrEmpty(name) && string.Compare(name, "Microsoft", true) != 0)
-						return name;
-				}
-				catch (Exception) { }
 				return "Unknown";
 			}
 		}
